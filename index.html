@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<title>Forge Fitness</title>
+<style>
+:root{--bg:#0b1220;--card:#111827;--card2:#172033;--ink:#f8fafc;--muted:#9aa6b2;--line:#273449;--gold:#f4b942;--green:#2ea043;--red:#b23a48;--blue:#5aa9e6}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}body{padding-bottom:88px}
+.app{max-width:760px;margin:auto;padding:16px 14px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.brand{font-size:25px;font-weight:900}.sub{font-size:12px;color:var(--muted)}
+.card{background:linear-gradient(180deg,var(--card),#0e1626);border:1px solid var(--line);border-radius:18px;padding:15px;margin:12px 0}.hero{background:linear-gradient(135deg,#17253c,#111827 65%,#241d08)}
+h2{font-size:19px;margin:0 0 10px}.muted{color:var(--muted)}.big{font-size:30px;font-weight:900}.small{font-size:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px}.metric strong{font-size:20px;display:block;margin-top:3px}
+.btn{border:0;border-radius:12px;padding:11px 13px;font-weight:800;background:var(--gold);color:#161616}.btn.secondary{background:#1d2939;color:var(--ink);border:1px solid var(--line)}.btn.danger{background:#3a1d24;color:#ffd8df;border:1px solid #713241}.btn.small{font-size:12px;padding:8px 9px}
+.row{display:flex;gap:8px;align-items:center}.row.wrap{flex-wrap:wrap}.row.space{justify-content:space-between}.stack{display:flex;flex-direction:column;gap:8px}
+.field{width:100%;background:#0d1524;border:1px solid var(--line);color:var(--ink);border-radius:11px;padding:10px;font-size:15px}label{font-size:12px;color:var(--muted);display:block;margin:8px 0 5px}
+.exercise{border-top:1px solid var(--line);padding:12px 0}.exercise:first-child{border-top:0}.name{font-weight:850}.meta{font-size:12px;color:var(--muted);margin-top:3px}
+.setrow{display:grid;grid-template-columns:30px 1fr 1fr 56px;gap:7px;align-items:center;margin-top:8px}.setrow .field{padding:8px}.done{background:#17351f!important;color:#bdf4c7!important;border-color:#2d6d39!important}
+.page{display:none}.page.active{display:block}.tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(8,14,24,.96);border-top:1px solid var(--line);padding:7px 6px calc(7px + env(safe-area-inset-bottom));z-index:20}.tabs-inner{max-width:760px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}.tab{background:transparent;border:0;color:var(--muted);border-radius:10px;padding:8px 2px;font-size:10px}.tab b{display:block;font-size:18px}.tab.active{background:#171f2d;color:var(--gold)}
+.preview{width:100%;max-height:360px;object-fit:contain;border:1px solid var(--line);border-radius:14px;background:#070c14;margin-top:10px}.hide{display:none!important}.notice{padding:10px 11px;border-left:3px solid var(--blue);border-radius:8px;background:#141d2b;color:#cfdae8;font-size:12px;line-height:1.4}.analysis{white-space:pre-wrap;background:#0c1422;border:1px solid var(--line);border-radius:12px;padding:12px;line-height:1.45}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.tile{aspect-ratio:3/4;border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative;background:#080d15}.tile img{width:100%;height:100%;object-fit:cover}.tile span{position:absolute;left:5px;bottom:5px;background:rgba(0,0,0,.68);padding:4px 5px;border-radius:6px;font-size:9px}
+.bar{height:7px;background:#273244;border-radius:99px;overflow:hidden;margin-top:7px}.bar span{display:block;height:100%;background:var(--gold)}
+@media(max-width:430px){.app{padding:13px 11px}.setrow{grid-template-columns:28px 1fr 1fr 52px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top"><div><div class="brand">FORGE FITNESS</div><div class="sub">Training • nutrition • camera logging</div></div><div class="small muted" id="date"></div></div>
+
+<section id="p-home" class="page active">
+  <div class="card hero">
+    <div class="small muted">NEXT WORKOUT</div>
+    <div class="big" id="nextName">Push A</div>
+    <p class="muted" id="nextNote">Upper chest • delts • triceps • traps • neck</p>
+    <button class="btn" onclick="go('workout')">Start workout</button>
+  </div>
+  <div class="grid">
+    <div class="metric"><span class="muted small">Protein</span><strong><span id="homeP">0</span> g</strong><div class="bar"><span id="pbar"></span></div><span class="muted small">Goal <span id="pg">190</span> g</span></div>
+    <div class="metric"><span class="muted small">Calories</span><strong id="homeCal">0</strong><div class="bar"><span id="cbar"></span></div><span class="muted small">Goal <span id="cg">2500</span></span></div>
+    <div class="metric"><span class="muted small">Last weight</span><strong id="homeWeight">—</strong><span class="muted small">lb</span></div>
+    <div class="metric"><span class="muted small">Training</span><strong id="homeSessions">0</strong><span class="muted small">sessions / 7 days</span></div>
+  </div>
+  <div class="card"><h2>Coach flags</h2><div id="flags" class="stack"></div></div>
+</section>
+
+<section id="p-workout" class="page">
+  <div class="card">
+    <div class="row space"><div><div class="small muted">WORKOUT</div><h2 id="wTitle">Push A</h2></div><select id="wSelect" class="field" style="width:auto" onchange="changeWorkout(this.value)"></select></div>
+    <div class="notice">Force USA G3 cable rule is active: enter the actual stack setting. Forge shows estimated handle resistance at stack ÷ 2.</div>
+    <div id="exerciseList"></div>
+    <button class="btn" onclick="finishWorkout()">Finish workout</button>
+  </div>
+</section>
+
+<section id="p-camera" class="page">
+  <div class="card">
+    <h2>Camera logger</h2>
+    <select id="cameraMode" class="field">
+      <option value="meal">Meal / food</option>
+      <option value="label">Nutrition label</option>
+      <option value="weight">Gym weight / cable stack</option>
+      <option value="progress">Progress photo</option>
+    </select>
+    <label>Take a photo or choose one</label>
+    <input id="cameraInput" class="field" type="file" accept="image/*" capture="environment" onchange="cameraPicked(event)">
+    <img id="cameraPreview" class="preview hide" alt="Camera preview">
+    <div class="row wrap" style="margin-top:10px">
+      <button class="btn" onclick="analyzePhoto()">Analyze</button>
+      <button class="btn secondary" onclick="clearCamera()">Clear</button>
+    </div>
+    <div id="cameraStatus" class="notice" style="margin-top:10px">Camera is active now. Progress photos can already be saved on this phone. AI recognition needs the secure endpoint connected in Settings.</div>
+    <div id="analysisBox" class="analysis hide" style="margin-top:10px"></div>
+    <div id="analysisActions" class="row wrap hide" style="margin-top:10px"></div>
+  </div>
+  <div class="card">
+    <h2>Manual food fallback</h2>
+    <div class="grid">
+      <div><label>Food</label><input id="foodName" class="field" placeholder="Protein shake"></div>
+      <div><label>Calories</label><input id="foodCal" class="field" type="number"></div>
+      <div><label>Protein g</label><input id="foodP" class="field" type="number"></div>
+      <div><label>Carbs g</label><input id="foodC" class="field" type="number"></div>
+      <div><label>Fat g</label><input id="foodF" class="field" type="number"></div>
+    </div>
+    <button class="btn" style="margin-top:9px" onclick="addManualFood()">Add food</button>
+    <div id="foodLog" style="margin-top:10px"></div>
+  </div>
+</section>
+
+<section id="p-progress" class="page">
+  <div class="card">
+    <h2>Body checkpoint</h2>
+    <div class="grid">
+      <div><label>Weight lb</label><input id="mWeight" class="field" type="number" step=".1"></div>
+      <div><label>Waist in</label><input id="mWaist" class="field" type="number" step=".125"></div>
+      <div><label>Chest in</label><input id="mChest" class="field" type="number" step=".125"></div>
+      <div><label>Neck in</label><input id="mNeck" class="field" type="number" step=".125"></div>
+      <div><label>Left arm in</label><input id="mLArm" class="field" type="number" step=".125"></div>
+      <div><label>Right arm in</label><input id="mRArm" class="field" type="number" step=".125"></div>
+    </div>
+    <button class="btn" style="margin-top:9px" onclick="saveMetrics()">Save checkpoint</button>
+    <div id="metricLog" style="margin-top:10px"></div>
+  </div>
+  <div class="card"><h2>Progress photos</h2><div id="photoGrid" class="photos"></div></div>
+</section>
+
+<section id="p-settings" class="page">
+  <div class="card">
+    <h2>Targets</h2>
+    <label>Calories / day</label><input id="sCal" class="field" type="number">
+    <label>Protein / day (g)</label><input id="sP" class="field" type="number">
+    <button class="btn" style="margin-top:9px" onclick="saveSettings()">Save targets</button>
+  </div>
+  <div class="card">
+    <h2>AI camera connection</h2>
+    <div class="notice">The browser cannot safely contain your OpenAI API key. Paste the secure Worker URL here after we deploy it.</div>
+    <label>AI endpoint URL</label><input id="sEndpoint" class="field" placeholder="https://your-worker.example.workers.dev">
+    <button class="btn" style="margin-top:9px" onclick="saveSettings()">Save endpoint</button>
+  </div>
+</section>
+</div>
+
+<nav class="tabs"><div class="tabs-inner">
+<button class="tab active" data-t="home" onclick="go('home')"><b>⌂</b>Today</button>
+<button class="tab" data-t="workout" onclick="go('workout')"><b>🏋</b>Workout</button>
+<button class="tab" data-t="camera" onclick="go('camera')"><b>📷</b>Camera</button>
+<button class="tab" data-t="progress" onclick="go('progress')"><b>◫</b>Progress</button>
+<button class="tab" data-t="settings" onclick="go('settings')"><b>⚙</b>Settings</button>
+</div></nav>
+
+<script>
+const KEY='forge_full_v1';
+const today=()=>new Date().toISOString().slice(0,10);
+const workouts={
+'Push A':{note:'Upper chest • delts • triceps • traps • neck',ex:[
+{name:'Incline Barbell Bench',sets:4,reps:'8',load:135,unit:'lb'},
+{name:'Flat DB Press',sets:3,reps:'8-10',load:45,unit:'lb each'},
+{name:'Seated DB Shoulder Press',sets:3,reps:'8-10',load:35,unit:'lb each'},
+{name:'DB Lateral Raise',sets:3,reps:'12-15',load:15,unit:'lb each'},
+{name:'LOW-TO-HIGH Cable Fly',sets:3,reps:'12-15',load:10,unit:'lb loaded/side',cable:true},
+{name:'Rope Triceps Pushdown',sets:3,reps:'10-12',load:80,unit:'lb loaded',cable:true},
+{name:'DB Shrug',sets:3,reps:'10-12',load:50,unit:'lb each'},
+{name:'Neck Flexion',sets:2,reps:'20',load:0,unit:'light'},
+{name:'Neck Extension',sets:2,reps:'20',load:0,unit:'light'}]},
+'Pull A':{note:'Lats • upper back • rear delts • biceps',ex:[
+{name:'Chest-Supported DB Row',sets:4,reps:'8',load:40,unit:'lb each'},
+{name:'Lat Pulldown',sets:4,reps:'8',load:175,unit:'lb loaded',cable:true},
+{name:'Seated Cable Row',sets:3,reps:'10',load:175,unit:'lb loaded',cable:true},
+{name:'Rear-Delt DB Fly',sets:4,reps:'15',load:10,unit:'lb each'},
+{name:'Straight-Arm Pulldown',sets:3,reps:'10',load:90,unit:'lb loaded',cable:true},
+{name:'EZ-Bar Curl',sets:3,reps:'8',load:65,unit:'lb total'},
+{name:'Hammer Curl',sets:3,reps:'10',load:25,unit:'lb each'}]},
+'Push B':{note:'Chest • delts • triceps • neck',ex:[
+{name:'Incline Barbell Bench',sets:3,reps:'10',load:125,unit:'lb'},
+{name:'Flat DB Press',sets:3,reps:'10',load:45,unit:'lb each'},
+{name:'Seated DB Shoulder Press',sets:3,reps:'10',load:30,unit:'lb each'},
+{name:'DB Lateral Raise',sets:4,reps:'12',load:15,unit:'lb each'},
+{name:'LOW-TO-HIGH Cable Fly',sets:3,reps:'12',load:10,unit:'lb loaded/side',cable:true},
+{name:'Rope Triceps Pushdown',sets:3,reps:'12',load:75,unit:'lb loaded',cable:true}]},
+'Pull B':{note:'Lats • upper back • biceps • traps',ex:[
+{name:'Lat Pulldown',sets:3,reps:'10',load:170,unit:'lb loaded',cable:true},
+{name:'Chest-Supported DB Row',sets:3,reps:'10',load:40,unit:'lb each'},
+{name:'Seated Cable Row',sets:3,reps:'12',load:160,unit:'lb loaded',cable:true},
+{name:'Rear-Delt DB Fly',sets:3,reps:'15',load:10,unit:'lb each'},
+{name:'Straight-Arm Pulldown',sets:3,reps:'12',load:80,unit:'lb loaded',cable:true},
+{name:'EZ-Bar Curl',sets:3,reps:'10',load:60,unit:'lb total'},
+{name:'Hammer Curl',sets:2,reps:'12',load:20,unit:'lb each'},
+{name:'DB Shrug',sets:3,reps:'12',load:50,unit:'lb each'}]}
+};
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||{settings:{cal:2500,p:190,endpoint:''},active:'Push A',drafts:{},workouts:[],food:[],metrics:[]};
+let imageData='',lastAnalysis=null;
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function go(x){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));document.getElementById('p-'+x).classList.add('active');document.querySelector('.tab[data-t="'+x+'"]').classList.add('active');if(x==='home')renderHome();if(x==='progress'){renderMetrics();renderPhotos()}}
+function draft(){const k=today()+'|'+state.active;if(!state.drafts[k])state.drafts[k]=workouts[state.active].ex.map(e=>({name:e.name,sets:Array.from({length:e.sets},()=>({w:e.load,r:'',done:false}))}));save();return state.drafts[k]}
+function renderWorkout(){wTitle.textContent=state.active;wSelect.innerHTML=Object.keys(workouts).map(x=>'<option '+(x===state.active?'selected':'')+'>'+x+'</option>').join('');const d=draft();exerciseList.innerHTML=workouts[state.active].ex.map((e,i)=>'<div class="exercise"><div class="name">'+e.name+'</div><div class="meta">'+e.sets+' × '+e.reps+' @ '+e.load+' '+e.unit+(e.cable?' • G3 2:1 ≈ '+(e.load/2)+' lb handle':'')+'</div>'+d[i].sets.map((s,j)=>'<div class="setrow"><span>S'+(j+1)+'</span><input class="field" type="number" step=".5" value="'+s.w+'" onchange="setv('+i+','+j+',\\'w\\',this.value)"><input class="field" type="number" placeholder="reps" value="'+s.r+'" onchange="setv('+i+','+j+',\\'r\\',this.value)"><button class="btn small '+(s.done?'done':'secondary')+'" onclick="toggleSet('+i+','+j+')">'+(s.done?'✓':'Done')+'</button></div>').join('')+'</div>').join('')}
+function changeWorkout(x){state.active=x;save();renderWorkout();renderHome()}
+function setv(i,j,k,v){const d=draft();d[i].sets[j][k]=k==='w'?Number(v):v;save()}
+function toggleSet(i,j){const d=draft();d[i].sets[j].done=!d[i].sets[j].done;save();renderWorkout()}
+function finishWorkout(){const d=draft(),done=d.flatMap(x=>x.sets).filter(s=>s.done).length,total=d.flatMap(x=>x.sets).length;if(!done)return alert('Complete at least one set first.');state.workouts.push({date:new Date().toISOString(),name:state.active,done,total,data:d});delete state.drafts[today()+'|'+state.active];const a=Object.keys(workouts),n=a.indexOf(state.active);state.active=a[(n+1)%a.length];save();renderWorkout();renderHome();alert('Workout saved: '+done+'/'+total+' sets.')}
+function foodToday(){return state.food.filter(x=>x.date.slice(0,10)===today())}
+function totals(){return foodToday().reduce((a,x)=>({cal:a.cal+(+x.cal||0),p:a.p+(+x.p||0),c:a.c+(+x.c||0),f:a.f+(+x.f||0)}),{cal:0,p:0,c:0,f:0})}
+function renderHome(){const t=totals(),w=workouts[state.active];nextName.textContent=state.active;nextNote.textContent=w.note;homeP.textContent=Math.round(t.p);homeCal.textContent=Math.round(t.cal);pg.textContent=state.settings.p;cg.textContent=state.settings.cal;pbar.style.width=Math.min(100,t.p/state.settings.p*100)+'%';cbar.style.width=Math.min(100,t.cal/state.settings.cal*100)+'%';homeWeight.textContent=state.metrics.length?(state.metrics[state.metrics.length-1].weight||'—'):'—';const cut=Date.now()-7*864e5;homeSessions.textContent=state.workouts.filter(x=>new Date(x.date).getTime()>=cut).length;let f=[];if(!foodToday().length)f.push('No food logged today.');if(state.workouts.length){let days=Math.floor((Date.now()-new Date(state.workouts[state.workouts.length-1].date))/864e5);if(days>=7)f.push('It has been '+days+' days since your last logged workout.');}else f.push('No completed workout logged in Forge yet.');f.push('G3 cable math is active: stack setting ÷ 2 = estimated handle resistance.');flags.innerHTML=f.map(x=>'<div class="notice">'+x+'</div>').join('')}
+function cameraPicked(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{imageData=r.result;cameraPreview.src=imageData;cameraPreview.classList.remove('hide')};r.readAsDataURL(file)}
+function clearCamera(){imageData='';cameraInput.value='';cameraPreview.classList.add('hide');analysisBox.classList.add('hide');analysisActions.classList.add('hide')}
+async function analyzePhoto(){if(!imageData)return alert('Take or choose a photo first.');const mode=cameraMode.value;if(mode==='progress'){await saveProgressPhoto(imageData);cameraStatus.textContent='Progress photo saved on this device.';renderPhotos();return;}if(!state.settings.endpoint)return alert('The camera works, but AI recognition is not connected yet. Open Settings and add the secure AI endpoint.');analysisBox.classList.remove('hide');analysisBox.textContent='Analyzing…';analysisActions.classList.add('hide');try{const r=await fetch(state.settings.endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode,imageDataUrl:imageData})});const x=await r.json();if(!r.ok)throw Error(x.error||'Analysis failed');lastAnalysis=x;analysisBox.textContent=formatAnalysis(x);if(x.mode==='meal'){analysisActions.innerHTML='<button class="btn" onclick="addAIfood()">Add meal to today</button>';analysisActions.classList.remove('hide')}}catch(e){analysisBox.textContent='Analysis failed: '+e.message}}
+function formatAnalysis(x){let s=(x.summary||'Analysis')+'\\nConfidence: '+Math.round((x.confidence||0)*100)+'%';if(x.mode==='meal'){s+='\\n\\n'+(x.food_items||[]).map(i=>i.name+': ~'+Math.round(i.estimated_grams)+' g • '+Math.round(i.calories)+' cal • '+Math.round(i.protein)+'P / '+Math.round(i.carbs)+'C / '+Math.round(i.fat)+'F').join('\\n');s+='\\n\\nTotal: '+Math.round(x.totals.calories)+' cal • '+Math.round(x.totals.protein)+'P / '+Math.round(x.totals.carbs)+'C / '+Math.round(x.totals.fat)+'F'}if(x.mode==='label')s+='\\n\\nServing: '+x.label.serving_size+'\\nCalories: '+x.label.calories+'\\nProtein: '+x.label.protein+' g\\nCarbs: '+x.label.carbs+' g\\nFat: '+x.label.fat+' g';if(x.mode==='weight')s+='\\n\\nVisible load: '+x.recognized_load.loaded_lb+' lb'+(x.recognized_load.is_cable?'\\nG3 handle estimate: '+x.recognized_load.handle_lb+' lb':'');if(x.notes)s+='\\n\\n'+x.notes;return s}
+function addAIfood(){if(!lastAnalysis)return;const t=lastAnalysis.totals;state.food.push({date:new Date().toISOString(),name:lastAnalysis.summary||'Photo-estimated meal',cal:t.calories,p:t.protein,c:t.carbs,f:t.fat,source:'AI photo estimate'});save();renderFood();renderHome();alert('Meal added. Photo portions are estimates; correct them if needed.')}
+function addManualFood(){state.food.push({date:new Date().toISOString(),name:foodName.value||'Food',cal:+foodCal.value||0,p:+foodP.value||0,c:+foodC.value||0,f:+foodF.value||0,source:'manual'});save();foodName.value=foodCal.value=foodP.value=foodC.value=foodF.value='';renderFood();renderHome()}
+function renderFood(){const t=totals(),d=foodToday();foodLog.innerHTML='<div class="row space"><strong>Today</strong><span class="small muted">'+Math.round(t.cal)+' cal • '+Math.round(t.p)+'P • '+Math.round(t.c)+'C • '+Math.round(t.f)+'F</span></div>'+(!d.length?'<p class="muted">Nothing logged yet.</p>':d.map(x=>'<div class="exercise"><div class="name">'+x.name+'</div><div class="meta">'+Math.round(x.cal)+' cal • '+Math.round(x.p)+'P / '+Math.round(x.c)+'C / '+Math.round(x.f)+'F • '+(x.source||'')+'</div></div>').join(''))}
+function saveMetrics(){state.metrics.push({date:new Date().toISOString(),weight:+mWeight.value||0,waist:+mWaist.value||0,chest:+mChest.value||0,neck:+mNeck.value||0,larm:+mLArm.value||0,rarm:+mRArm.value||0});save();mWeight.value=mWaist.value=mChest.value=mNeck.value=mLArm.value=mRArm.value='';renderMetrics();renderHome()}
+function renderMetrics(){metricLog.innerHTML=state.metrics.length?[...state.metrics].reverse().slice(0,8).map(x=>'<div class="exercise"><strong>'+new Date(x.date).toLocaleDateString()+'</strong><div class="meta">'+(x.weight||'—')+' lb • Waist '+(x.waist||'—')+' • Chest '+(x.chest||'—')+' • Neck '+(x.neck||'—')+' • Arms '+(x.larm||'—')+'/'+(x.rarm||'—')+'</div></div>').join(''):'<p class="muted">No checkpoints yet.</p>'}
+function dbOpen(){return new Promise((ok,no)=>{const r=indexedDB.open('forgePhotos',1);r.onupgradeneeded=()=>r.result.createObjectStore('photos',{keyPath:'id',autoIncrement:true});r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
+async function saveProgressPhoto(data){const db=await dbOpen();const tx=db.transaction('photos','readwrite');tx.objectStore('photos').add({date:new Date().toISOString(),data});return new Promise(ok=>tx.oncomplete=()=>{db.close();ok()})}
+async function renderPhotos(){try{const db=await dbOpen();const r=db.transaction('photos','readonly').objectStore('photos').getAll();r.onsuccess=()=>{photoGrid.innerHTML=r.result.sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,18).map(x=>'<div class="tile"><img src="'+x.data+'"><span>'+new Date(x.date).toLocaleDateString()+'</span></div>').join('');db.close()}}catch(e){}}
+function saveSettings(){state.settings.cal=+sCal.value||2500;state.settings.p=+sP.value||190;state.settings.endpoint=sEndpoint.value.trim().replace(/\\/$/,'');save();renderHome();alert('Settings saved.')}
+function init(){date.textContent=new Date().toLocaleDateString(undefined,{month:'short',day:'numeric'});sCal.value=state.settings.cal;sP.value=state.settings.p;sEndpoint.value=state.settings.endpoint||'';renderWorkout();renderFood();renderMetrics();renderPhotos();renderHome()}
+init();
+</script>
+</body>
+</html>
